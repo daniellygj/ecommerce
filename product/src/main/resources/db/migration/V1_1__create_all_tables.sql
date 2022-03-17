@@ -29,6 +29,16 @@ CREATE TABLE discount
     deleted_at       timestamp
 );
 
+CREATE TABLE product_brand
+(
+    id           serial PRIMARY KEY,
+    name         varchar,
+    description  varchar,
+    created_at   timestamp,
+    modified_at  timestamp,
+    deleted_at   timestamp
+);
+
 CREATE TABLE product
 (
     id           serial PRIMARY KEY,
@@ -36,6 +46,7 @@ CREATE TABLE product
     description  varchar,
     category_id  serial,
     inventory_id serial,
+    brand_id serial,
     price        float,
     discount_id  serial,
     created_at   timestamp,
@@ -51,3 +62,6 @@ ALTER TABLE product
 
 ALTER TABLE product
     ADD FOREIGN KEY (discount_id) REFERENCES discount (id);
+
+ALTER TABLE product
+    ADD FOREIGN KEY (brand_id) REFERENCES product_brand (id);
