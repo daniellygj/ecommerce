@@ -3,9 +3,25 @@
 ### Recursos e requisitos 
 O aplicativo representa uma loja online que vende vários produtos físicos, como camisetas e cafés. Se você já comprou algo online antes, a experiência de usar a loja deve ser relativamente familiar. Aqui estão alguns dos recursos básicos que a loja implementa: 
 
+##### Produto:
+* Cadastrar produtos
 * Listar produtos do catálogo 
 * Filtrar produtos por categoria 
-* Filtrar itens por marca 
+* Filtrar produtos  por marca 
+* Guardar histórico de preços do produto
+* Visualizar histórico de preços do produto
+* Cadastrar categoria
+* Cadastrar marca
+* Listar marcas
+* Criar inventário
+* Visualizar inventários
+* Visualizar itens do inventário
+* Editar inventário
+* Cadastrar desconto
+* Editar desconto
+* Encerrar desconto
+
+##### outros
 * Adicionar produtos à cesta de compras 
 * Editar ou remover produtos da cesta 
 * Check-out 
