@@ -24,7 +24,7 @@ public class Discount {
 
     private String description;
 
-    private String discountPercent;
+    private float discountPercent;
 
     private boolean active;
 
