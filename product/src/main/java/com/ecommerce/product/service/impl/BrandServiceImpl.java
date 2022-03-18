@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class BrandServiceImpl implements BrandService {
@@ -42,5 +43,10 @@ public class BrandServiceImpl implements BrandService {
         brandSaved.setDeletedAt(LocalDateTime.now());
 
         repository.save(brandSaved);
+    }
+
+    @Override
+    public List<Brand> listBrand() {
+        return repository.findAll();
     }
 }

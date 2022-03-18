@@ -2,6 +2,8 @@ package com.ecommerce.product.service;
 
 import com.ecommerce.product.model.Brand;
 
+import java.util.List;
+
 public interface BrandService {
 
     Brand createBrand(Brand brand);
@@ -10,4 +12,5 @@ public interface BrandService {
 
     void deleteBrand(Long id);
 
+    List<Brand> listBrand();
 }
