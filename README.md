@@ -7,6 +7,9 @@ O aplicativo representa uma loja online que vende vários produtos físicos, com
 * Cadastrar produtos
 * Listar produtos do catálogo 
 * Filtrar produtos por categoria 
+* Cadastrar categoria
+* Editar categoria
+* Visualizar categorias
 * Filtrar produtos  por marca 
 * Guardar histórico de preços do produto
 * Visualizar histórico de preços do produto
