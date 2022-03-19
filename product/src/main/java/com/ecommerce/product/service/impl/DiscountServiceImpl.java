@@ -23,6 +23,7 @@ public class DiscountServiceImpl implements DiscountService {
     public Discount createDiscount(Discount discount) {
         discount.setModifiedAt(LocalDateTime.now());
         discount.setCreatedAt(LocalDateTime.now());
+        discount.setActive(true);
 
         return repository.save(discount);
     }
@@ -50,6 +51,7 @@ public class DiscountServiceImpl implements DiscountService {
         Discount discountSaved = repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Discount", id));
 
         discountSaved.setDeletedAt(LocalDateTime.now());
+        discountSaved.setModifiedAt(LocalDateTime.now());
 
         repository.save(discountSaved);
     }

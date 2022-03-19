@@ -19,7 +19,6 @@ public class BrandServiceImpl implements BrandService {
         this.repository = brandRepository;
     }
 
-    // todo - o nome deve ser único?
     public Brand createBrand(Brand brand) {
         brand.setModifiedAt(LocalDateTime.now());
         brand.setCreatedAt(LocalDateTime.now());
