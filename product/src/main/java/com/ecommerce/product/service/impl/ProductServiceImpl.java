@@ -34,6 +34,20 @@ public class ProductServiceImpl implements ProductService {
         product.setModifiedAt(LocalDateTime.now());
         product.setCreatedAt(LocalDateTime.now());
 
+        Category category = null;
+        Discount discount = null;
+
+        if (product.getCategory() != null) {
+            category = categoryService.findById(product.getCategory().getId());
+        }
+
+        if (product.getDiscount() != null) {
+            discount = discountService.findById(product.getDiscount().getId());
+        }
+
+        product.setCategory(category);
+        product.setDiscount(discount);
+
         return repository.save(product);
     }
 

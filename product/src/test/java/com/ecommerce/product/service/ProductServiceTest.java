@@ -48,6 +48,8 @@ public class ProductServiceTest {
         createProductWithDefaultValues();
 
         when(repository.save(product)).thenReturn(product);
+        when(categoryService.findById(product.getCategory().getId())).thenReturn(product.getCategory());
+        when(discountService.findById(product.getDiscount().getId())).thenReturn(product.getDiscount());
 
         Product valueReturned = service.createProduct(product);
 

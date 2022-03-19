@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/brand")
 public class BrandController {
 
-    private BrandService service;
+    private final BrandService service;
 
     public BrandController(@Autowired BrandService service) {
         this.service = service;
@@ -28,8 +28,8 @@ public class BrandController {
         return ResponseEntity.ok(service.editBrand(brand));
     }
 
-    @DeleteMapping
-    public void deleteBrand(@RequestParam("id") Long id) {
+    @DeleteMapping("{id}")
+    public void deleteBrand(@PathVariable("id") Long id) {
         service.deleteBrand(id);
     }
 
