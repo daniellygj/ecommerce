@@ -1,9 +1,9 @@
 package com.ecommerce.product.model;
 
 import lombok.*;
-import java.time.LocalDateTime;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -27,4 +27,7 @@ public class Category {
     private LocalDateTime modifiedAt;
     
     private LocalDateTime deletedAt;
+
+    @Column(name = "svg_path")
+    private String svg;
 }
