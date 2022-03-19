@@ -3,7 +3,7 @@ package com.ecommerce.product.service.impl;
 import com.ecommerce.product.model.Discount;
 import com.ecommerce.product.repository.DiscountRepository;
 import com.ecommerce.product.service.DiscountService;
-import com.ecommerce.product.utils.exception.Exception;
+import com.ecommerce.product.utils.exception.GenericException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +29,7 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
     public Discount editDiscount(Discount discount) {
-        Discount discountSaved = repository.findById(discount.getId()).orElseThrow(() -> new Exception.NotFoundException("Discount", discount.getId()));
+        Discount discountSaved = repository.findById(discount.getId()).orElseThrow(() -> new GenericException.NotFoundException("Discount", discount.getId()));
 
         discountSaved.setDiscountPercent(discount.getDiscountPercent());
         discountSaved.setDescription(discount.getDescription());
@@ -42,12 +42,12 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
     public Discount findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new Exception.NotFoundException("Discount", id));
+        return repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Discount", id));
     }
 
     @Override
     public void deleteDiscount(Long id) {
-        Discount discountSaved = repository.findById(id).orElseThrow(() -> new Exception.NotFoundException("Discount", id));
+        Discount discountSaved = repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Discount", id));
 
         discountSaved.setDeletedAt(LocalDateTime.now());
 

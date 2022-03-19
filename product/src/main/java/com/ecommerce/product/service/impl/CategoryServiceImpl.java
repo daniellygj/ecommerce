@@ -3,7 +3,7 @@ package com.ecommerce.product.service.impl;
 import com.ecommerce.product.model.Category;
 import com.ecommerce.product.repository.CategoryRepository;
 import com.ecommerce.product.service.CategoryService;
-import com.ecommerce.product.utils.exception.Exception;
+import com.ecommerce.product.utils.exception.GenericException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category editCategory(Category category) {
-        Category categorySaved = repository.findById(category.getId()).orElseThrow(() -> new Exception.NotFoundException("Category", category.getId()));
+        Category categorySaved = repository.findById(category.getId()).orElseThrow(() -> new GenericException.NotFoundException("Category", category.getId()));
 
         categorySaved.setName(category.getName());
         categorySaved.setDescription(category.getDescription());
@@ -40,12 +40,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new Exception.NotFoundException("Category", id));
+        return repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Category", id));
     }
 
     @Override
     public void deleteCategory(Long id) {
-        Category categorySaved = repository.findById(id).orElseThrow(() -> new Exception.NotFoundException("Category", id));
+        Category categorySaved = repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Category", id));
 
         categorySaved.setDeletedAt(LocalDateTime.now());
 

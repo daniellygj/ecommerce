@@ -5,7 +5,8 @@ import com.ecommerce.product.model.Product;
 import com.ecommerce.product.repository.InventoryRepository;
 import com.ecommerce.product.service.InventoryService;
 import com.ecommerce.product.service.ProductService;
-import com.ecommerce.product.utils.exception.Exception;
+import com.ecommerce.product.utils.exception.GenericException;
+import com.ecommerce.product.utils.exception.InventoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,14 +34,8 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public Inventory editInventory(Inventory inventory) { // todo
-
-        return null;
-    }
-
-    @Override
     public void deleteInventory(Long id) {
-        Inventory inventorySaved = repository.findById(id).orElseThrow(() -> new Exception.NotFoundException("Discount", id));
+        Inventory inventorySaved = repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Inventory", id));
 
         inventorySaved.setDeletedAt(LocalDateTime.now());
 
@@ -58,6 +53,7 @@ public class InventoryServiceImpl implements InventoryService {
 
         Inventory inventory = product.getInventory();
         inventory.setQuantity(inventory.getQuantity() + quantity);
+        inventory.setModifiedAt(LocalDateTime.now());
 
         return repository.save(inventory);
     }
@@ -67,7 +63,14 @@ public class InventoryServiceImpl implements InventoryService {
         Product product = productService.findById(productId);
 
         Inventory inventory = product.getInventory();
+        int qty = inventory.getQuantity() - quantity;
+
+        if (qty < 0) {
+            throw new InventoryException.NotEnoughtStockException(productId, quantity);
+        }
+
         inventory.setQuantity(inventory.getQuantity() - quantity);
+        inventory.setModifiedAt(LocalDateTime.now());
 
         return repository.save(inventory);
     }

@@ -6,9 +6,8 @@ import com.ecommerce.product.model.Product;
 import com.ecommerce.product.repository.ProductRepository;
 import com.ecommerce.product.service.CategoryService;
 import com.ecommerce.product.service.DiscountService;
-import com.ecommerce.product.service.InventoryService;
 import com.ecommerce.product.service.ProductService;
-import com.ecommerce.product.utils.exception.Exception;
+import com.ecommerce.product.utils.exception.GenericException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product editProduct(Product product) { // todo - adicionar histórico de preços
-        Product productSaved = repository.findById(product.getId()).orElseThrow(() -> new Exception.NotFoundException("Product", product.getId()));
+        Product productSaved = repository.findById(product.getId()).orElseThrow(() -> new GenericException.NotFoundException("Product", product.getId()));
 
         Category category = categoryService.findById(product.getCategory().getId());
         Discount discount = discountService.findById(product.getDiscount().getId());
@@ -55,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new Exception.NotFoundException("Product", id));
+        return repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Product", id));
     }
 
     @Override

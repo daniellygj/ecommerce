@@ -10,8 +10,6 @@ public interface InventoryService {
 
     Inventory createInventory(Inventory inventory);
 
-    Inventory editInventory(Inventory inventory);
-
     void deleteInventory(Long id);
 
     List<Inventory> listInventory();
