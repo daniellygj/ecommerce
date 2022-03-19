@@ -8,6 +8,7 @@ import com.ecommerce.product.service.CategoryService;
 import com.ecommerce.product.service.DiscountService;
 import com.ecommerce.product.service.ProductService;
 import com.ecommerce.product.utils.exception.GenericException;
+import com.ecommerce.product.utils.exception.ProductException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,22 +49,36 @@ public class ProductServiceImpl implements ProductService {
         productSaved.setPrice(product.getPrice());
         productSaved.setCategory(category);
         productSaved.setDiscount(discount);
+        productSaved.setModifiedAt(LocalDateTime.now());
 
         return repository.save(productSaved);
     }
 
     @Override
     public Product findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Product", id));
+        Product product = repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Product", id));
+        if (product.getDeletedAt() != null) {
+            throw new ProductException.ProductDeleted(id);
+        }
+        return product;
     }
 
     @Override
     public void deleteProduct(Long id) {
+        Product product = repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Product", id));
 
+        if (product.getDeletedAt() != null) {
+            throw new ProductException.ProductDeleted(id);
+        }
+
+        product.setDeletedAt(LocalDateTime.now());
+        product.setModifiedAt(LocalDateTime.now());
+
+        repository.save(product);
     }
 
     @Override
     public List<Product> listProduct() {
-        return null;
+        return repository.findAll();
     }
 }
