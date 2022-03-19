@@ -99,6 +99,7 @@ public class CategoryServiceTest {
         Category valueReturned = categoryService.findById(category.getId());
 
         assertEquals(valueReturned.getDescription(), categorySaved.getDescription());
+        assertEquals(valueReturned.getSvg(), categorySaved.getSvg());
         assertEquals(valueReturned.getName(), categorySaved.getName());
         assertEquals(valueReturned.getCreatedAt(), categorySaved.getCreatedAt());
         assertEquals(valueReturned.getModifiedAt(), categorySaved.getModifiedAt());
