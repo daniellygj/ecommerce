@@ -12,7 +12,6 @@ public class CategoryTestBuilder {
 
     private static final String DEFAULT_NAME = "Mock Category Name";
     private static final String DEFAULT_DESCRIPTION = "Mock Category Description";
-    private static final String DEFAULT_SVG = "svg/path";
 
     private static final String NEW_NAME = "Mock Category Name";
     private static final String NEW_DESCRIPTION = "Mock Category Description";
