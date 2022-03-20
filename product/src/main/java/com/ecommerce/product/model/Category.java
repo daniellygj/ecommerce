@@ -24,9 +24,6 @@ public class Category {
 
     private String description;
 
-    @Column(name = "svg_path")
-    private String svg;
-
     private LocalDateTime createdAt;
     
     private LocalDateTime modifiedAt;

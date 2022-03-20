@@ -22,9 +22,6 @@ public class CategoryDTO {
     @Schema(example= "0", description = "Sewn fabrics that we use to cover our bodies")
     private String description;
 
-    @Schema(example= "/danzinha/ecomm/svg", description = "The svg Path")
-    private String svg;
-
     @JsonIgnore
     private LocalDateTime createdAt;
 

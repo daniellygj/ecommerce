@@ -16,7 +16,6 @@ public class CategoryTestBuilder {
 
     private static final String NEW_NAME = "Mock Category Name";
     private static final String NEW_DESCRIPTION = "Mock Category Description";
-    private static final String NEW_SVG = "new/svg/path";
 
     public static CategoryTestBuilder init() {
         return new CategoryTestBuilder();
@@ -27,7 +26,6 @@ public class CategoryTestBuilder {
                 .id(ID)
                 .name(DEFAULT_NAME)
                 .description(DEFAULT_DESCRIPTION)
-                .svg(DEFAULT_SVG)
                 .createdAt(CREATED_AT)
                 .modifiedAt(MODIFIED_AT);
     }
@@ -37,7 +35,6 @@ public class CategoryTestBuilder {
                 .id(ID)
                 .name(NEW_NAME)
                 .description(NEW_DESCRIPTION)
-                .svg(NEW_SVG)
                 .createdAt(CREATED_AT)
                 .modifiedAt(MODIFIED_AT);
     }
