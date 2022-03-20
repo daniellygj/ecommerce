@@ -1,5 +1,6 @@
 package com.ecommerce.product.service.impl;
 
+import com.ecommerce.product.controller.dto.CategoryDTO;
 import com.ecommerce.product.controller.dto.DiscountDTO;
 import com.ecommerce.product.controller.dto.ProductDTO;
 import com.ecommerce.product.model.Category;
@@ -42,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
         productDTO.setModifiedAt(LocalDateTime.now());
         productDTO.setCreatedAt(LocalDateTime.now());
 
-        Category category = null;
+        CategoryDTO category = null;
         DiscountDTO discount = null;
 
         if (productDTO.getCategory() != null) {
@@ -53,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
             discount = discountService.findById(productDTO.getDiscount().getId());
         }
 
-//        productDTO.setCategory(category);
+        productDTO.setCategory(category);
         productDTO.setDiscount(discount);
 
         Product product = mapper.map(productDTO, Product.class);
@@ -68,13 +69,13 @@ public class ProductServiceImpl implements ProductService {
 
         ProductDTO productDTOToSave = mapper.map(productFound, ProductDTO.class);
 
-        Category category = categoryService.findById(productDTO.getCategory().getId());
+        CategoryDTO category = categoryService.findById(productDTO.getCategory().getId());
         DiscountDTO discountDTO = discountService.findById(productDTO.getDiscount().getId());
 
         productDTOToSave.setDescription(productDTO.getDescription());
         productDTOToSave.setName(productDTO.getName());
         productDTOToSave.setPrice(productDTO.getPrice());
-//        productDTOToSave.setCategory(category);
+        productDTOToSave.setCategory(category);
         productDTOToSave.setDiscount(discountDTO);
         productDTOToSave.setModifiedAt(LocalDateTime.now());
 

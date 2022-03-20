@@ -1,12 +1,17 @@
 package com.ecommerce.product.service.impl;
 
+import com.ecommerce.product.controller.dto.BrandDTO;
+import com.ecommerce.product.controller.dto.CategoryDTO;
 import com.ecommerce.product.model.Category;
 import com.ecommerce.product.repository.CategoryRepository;
 import com.ecommerce.product.service.CategoryService;
 import com.ecommerce.product.utils.exception.GenericException;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,32 +20,43 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository repository;
 
+    private final ModelMapper mapper;
+
     public CategoryServiceImpl(@Autowired CategoryRepository repository) {
         this.repository = repository;
+        this.mapper = new ModelMapper();
     }
 
     @Override
-    public Category createCategory(Category category) {
-        category.setModifiedAt(LocalDateTime.now());
-        category.setCreatedAt(LocalDateTime.now());
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+        categoryDTO.setModifiedAt(LocalDateTime.now());
+        categoryDTO.setCreatedAt(LocalDateTime.now());
 
-        return repository.save(category);
+        Category categoryToSave = mapper.map(categoryDTO, Category.class);
+        Category category = repository.save(categoryToSave);
+
+        return mapper.map(category, CategoryDTO.class);
     }
 
     @Override
-    public Category editCategory(Category category) {
-        Category categorySaved = repository.findById(category.getId()).orElseThrow(() -> new GenericException.NotFoundException("Category", category.getId()));
+    public CategoryDTO editCategory(CategoryDTO categoryDTO) {
+        Category categoryFound = repository.findById(categoryDTO.getId()).orElseThrow(() -> new GenericException.NotFoundException("Category", categoryDTO.getId()));
 
-        categorySaved.setName(category.getName());
-        categorySaved.setDescription(category.getDescription());
-        categorySaved.setModifiedAt(LocalDateTime.now());
+        categoryFound.setName(categoryDTO.getName());
+        categoryFound.setDescription(categoryDTO.getDescription());
+        categoryFound.setModifiedAt(LocalDateTime.now());
 
-        return repository.save(categorySaved);
+        Category categoryToSave = mapper.map(categoryDTO, Category.class);
+        Category category = repository.save(categoryToSave);
+
+        return mapper.map(category, CategoryDTO.class);
     }
 
     @Override
-    public Category findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Category", id));
+    public CategoryDTO findById(Long id) {
+        Category category = repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Category", id));
+
+        return mapper.map(category, CategoryDTO.class);
     }
 
     @Override
@@ -53,7 +69,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> listCategory() {
-        return repository.findAll();
+    public List<CategoryDTO> listCategory() {
+        List<Category> categoryList = repository.findAll();
+        Type listType = new TypeToken<List<BrandDTO>>(){}.getType();
+        List<CategoryDTO> categoryDTOList =  mapper.map(categoryList, listType);
+        return categoryDTOList;
     }
 }

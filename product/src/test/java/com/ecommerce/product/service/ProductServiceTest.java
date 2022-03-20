@@ -58,7 +58,7 @@ public class ProductServiceTest {
         ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
         when(repository.save(isA(Product.class))).thenReturn(product);
-        when(categoryService.findById(product.getCategory().getId())).thenReturn(product.getCategory());
+        when(categoryService.findById(product.getCategory().getId())).thenReturn(productDTO.getCategory());
         when(discountService.findById(product.getDiscount().getId())).thenReturn(productDTO.getDiscount());
 
         ProductDTO valueReturned = service.createProduct(productDTO);
@@ -78,16 +78,10 @@ public class ProductServiceTest {
         createProductWithDefaultValues();
         createProductEdited();
 
-        Category category = CategoryTestBuilder
-                .init()
-                .withDefaultValues()
-                .id(123L)
-                .build();
-
         when(repository.findById(product.getId())).thenReturn(Optional.ofNullable(product));
         when(repository.save(eq(product))).thenReturn(product);
-        when(categoryService.findById(productEdited.getCategory().getId())).thenReturn(category);
-        when(discountService.findById(productEdited.getDiscount().getId())).thenReturn(productDTO.getDiscount());
+        when(categoryService.findById(productEdited.getCategory().getId())).thenReturn(productEditedDTO.getCategory());
+        when(discountService.findById(productEdited.getDiscount().getId())).thenReturn(productEditedDTO.getDiscount());
 
         service.editProduct(productEditedDTO);
 
@@ -124,7 +118,7 @@ public class ProductServiceTest {
 
         when(repository.findById(product.getId())).thenReturn(Optional.ofNullable(product));
         when(repository.save(eq(product))).thenReturn(product);
-        when(categoryService.findById(productEdited.getCategory().getId())).thenReturn(category);
+        when(categoryService.findById(productEdited.getCategory().getId())).thenReturn(productEditedDTO.getCategory());
         when(discountService.findById(productEdited.getDiscount().getId())).thenThrow(GenericException.NotFoundException.class);
 
         assertThrows(
@@ -139,13 +133,10 @@ public class ProductServiceTest {
         createProductWithDefaultValues();
         createProductEdited();
 
-
-        ProductDTO productDTO = mapper.map(product, ProductDTO.class);
-
         when(repository.findById(product.getId())).thenReturn(Optional.ofNullable(product));
         when(repository.save(eq(product))).thenReturn(product);
         when(categoryService.findById(productEdited.getCategory().getId())).thenThrow(GenericException.NotFoundException.class);
-        when(discountService.findById(productEdited.getDiscount().getId())).thenReturn(productDTO.getDiscount());
+        when(discountService.findById(productEdited.getDiscount().getId())).thenReturn(productEditedDTO.getDiscount());
 
         assertThrows(
                 GenericException.NotFoundException.class,

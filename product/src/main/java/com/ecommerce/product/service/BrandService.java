@@ -1,16 +1,16 @@
 package com.ecommerce.product.service;
 
-import com.ecommerce.product.model.Brand;
+import com.ecommerce.product.controller.dto.BrandDTO;
 
 import java.util.List;
 
 public interface BrandService {
 
-    Brand createBrand(Brand brand);
+    BrandDTO createBrand(BrandDTO brand);
 
-    Brand editBrand(Brand brand);
+    BrandDTO editBrand(BrandDTO brand);
 
     void deleteBrand(Long id);
 
-    List<Brand> listBrand();
+    List<BrandDTO> listBrand();
 }

@@ -1,12 +1,17 @@
 package com.ecommerce.product.service.impl;
 
+import com.ecommerce.product.controller.dto.BrandDTO;
 import com.ecommerce.product.model.Brand;
 import com.ecommerce.product.repository.BrandRepository;
 import com.ecommerce.product.service.BrandService;
 import com.ecommerce.product.utils.exception.GenericException;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,25 +20,34 @@ public class BrandServiceImpl implements BrandService {
 
     private final BrandRepository repository;
 
+    private final ModelMapper mapper;
+
     public BrandServiceImpl(@Autowired BrandRepository brandRepository) {
         this.repository = brandRepository;
+        this.mapper = new ModelMapper();
     }
 
-    public Brand createBrand(Brand brand) {
-        brand.setModifiedAt(LocalDateTime.now());
-        brand.setCreatedAt(LocalDateTime.now());
+    public BrandDTO createBrand(BrandDTO brandDTO) {
+        brandDTO.setModifiedAt(LocalDateTime.now());
+        brandDTO.setCreatedAt(LocalDateTime.now());
 
-        return repository.save(brand);
+        Brand brandToSave = mapper.map(brandDTO, Brand.class);
+        Brand brandSaved = repository.save(brandToSave);
+
+        return mapper.map(brandSaved, BrandDTO.class);
     }
 
-    public Brand editBrand(Brand brand) {
-        Brand brandSaved = repository.findById(brand.getId()).orElseThrow(() -> new GenericException.NotFoundException("Brand", brand.getId()));
+    public BrandDTO editBrand(BrandDTO brandDTO) {
+        Brand brandFound = repository.findById(brandDTO.getId()).orElseThrow(() -> new GenericException.NotFoundException("Brand", brandDTO.getId()));
 
-        brandSaved.setDescription(brand.getDescription());
-        brandSaved.setName(brand.getName());
-        brandSaved.setModifiedAt(LocalDateTime.now());
+        brandFound.setDescription(brandDTO.getDescription());
+        brandFound.setName(brandDTO.getName());
+        brandFound.setModifiedAt(LocalDateTime.now());
 
-        return repository.save(brandSaved);
+        Brand brandToSave = mapper.map(brandDTO, Brand.class);
+        Brand brandSaved = repository.save(brandToSave);
+
+        return mapper.map(brandSaved, BrandDTO.class);
     }
 
     @Override
@@ -46,7 +60,11 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public List<Brand> listBrand() {
-        return repository.findAll();
+    public List<BrandDTO> listBrand() {
+        List<Brand> brandList = repository.findAll();
+        Type listType = new TypeToken<List<BrandDTO>>(){}.getType();
+        List<BrandDTO> brandDTOList = mapper.map(brandList, listType);
+        return brandDTOList;
+
     }
 }
