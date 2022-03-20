@@ -1,5 +1,7 @@
 package com.ecommerce.product.service.impl;
 
+import com.ecommerce.product.controller.dto.DiscountDTO;
+import com.ecommerce.product.controller.dto.ProductDTO;
 import com.ecommerce.product.model.Category;
 import com.ecommerce.product.model.Discount;
 import com.ecommerce.product.model.Product;
@@ -9,9 +11,12 @@ import com.ecommerce.product.service.DiscountService;
 import com.ecommerce.product.service.ProductService;
 import com.ecommerce.product.utils.exception.GenericException;
 import com.ecommerce.product.utils.exception.ProductException;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,59 +27,70 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryService categoryService;
     private final DiscountService discountService;
 
+    private final ModelMapper mapper;
+
     public ProductServiceImpl(@Autowired ProductRepository repository, @Autowired CategoryService categoryService,
                               @Autowired DiscountService discountService) {
         this.repository = repository;
         this.categoryService = categoryService;
         this.discountService = discountService;
+        this.mapper = new ModelMapper();
     }
 
     @Override
-    public Product createProduct(Product product) {
-        product.setModifiedAt(LocalDateTime.now());
-        product.setCreatedAt(LocalDateTime.now());
+    public ProductDTO createProduct(ProductDTO productDTO) {
+        productDTO.setModifiedAt(LocalDateTime.now());
+        productDTO.setCreatedAt(LocalDateTime.now());
 
         Category category = null;
-        Discount discount = null;
+        DiscountDTO discount = null;
 
-        if (product.getCategory() != null) {
-            category = categoryService.findById(product.getCategory().getId());
+        if (productDTO.getCategory() != null) {
+            category = categoryService.findById(productDTO.getCategory().getId());
         }
 
-        if (product.getDiscount() != null) {
-            discount = discountService.findById(product.getDiscount().getId());
+        if (productDTO.getDiscount() != null) {
+            discount = discountService.findById(productDTO.getDiscount().getId());
         }
 
-        product.setCategory(category);
-        product.setDiscount(discount);
+//        productDTO.setCategory(category);
+        productDTO.setDiscount(discount);
 
-        return repository.save(product);
+        Product product = mapper.map(productDTO, Product.class);
+        Product productSaved = repository.save(product);
+
+        return mapper.map(productSaved, ProductDTO.class);
     }
 
     @Override
-    public Product editProduct(Product product) { // todo - adicionar histórico de preços
-        Product productSaved = repository.findById(product.getId()).orElseThrow(() -> new GenericException.NotFoundException("Product", product.getId()));
+    public ProductDTO editProduct(ProductDTO productDTO) { // todo - adicionar histórico de preços
+        Product productFound = repository.findById(productDTO.getId()).orElseThrow(() -> new GenericException.NotFoundException("Product", productDTO.getId()));
 
-        Category category = categoryService.findById(product.getCategory().getId());
-        Discount discount = discountService.findById(product.getDiscount().getId());
+        ProductDTO productDTOToSave = mapper.map(productFound, ProductDTO.class);
 
-        productSaved.setDescription(product.getDescription());
-        productSaved.setName(product.getName());
-        productSaved.setPrice(product.getPrice());
-        productSaved.setCategory(category);
-        productSaved.setDiscount(discount);
-        productSaved.setModifiedAt(LocalDateTime.now());
+        Category category = categoryService.findById(productDTO.getCategory().getId());
+        DiscountDTO discountDTO = discountService.findById(productDTO.getDiscount().getId());
 
-        return repository.save(productSaved);
+        productDTOToSave.setDescription(productDTO.getDescription());
+        productDTOToSave.setName(productDTO.getName());
+        productDTOToSave.setPrice(productDTO.getPrice());
+//        productDTOToSave.setCategory(category);
+        productDTOToSave.setDiscount(discountDTO);
+        productDTOToSave.setModifiedAt(LocalDateTime.now());
+
+        Product productToSave = mapper.map(productDTOToSave, Product.class);
+        repository.save(productToSave);
+
+        return productDTOToSave;
     }
 
     @Override
-    public Product findById(Long id) {
+    public ProductDTO findById(Long id) {
         Product product = repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Product", id));
         if (product.getDeletedAt() != null) {
             throw new ProductException.ProductDeleted(id);
         }
-        return product;
+        return mapper.map(product, ProductDTO.class);
     }
 
     @Override
@@ -92,7 +108,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> listProduct() {
-        return repository.findAll();
+    public List<ProductDTO> listProduct() {
+        List<Product> productList = repository.findAll();
+        Type listType = new TypeToken<List<ProductDTO>>(){}.getType();
+        List<ProductDTO> productDTOList = mapper.map(productList, listType);
+        return productDTOList;
     }
 }

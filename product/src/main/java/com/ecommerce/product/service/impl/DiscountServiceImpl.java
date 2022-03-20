@@ -1,12 +1,16 @@
 package com.ecommerce.product.service.impl;
 
+import com.ecommerce.product.controller.dto.DiscountDTO;
 import com.ecommerce.product.model.Discount;
 import com.ecommerce.product.repository.DiscountRepository;
 import com.ecommerce.product.service.DiscountService;
 import com.ecommerce.product.utils.exception.GenericException;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,35 +19,45 @@ public class DiscountServiceImpl implements DiscountService {
 
     private final DiscountRepository repository;
 
+    private final ModelMapper mapper;
+
     public DiscountServiceImpl(@Autowired DiscountRepository repository) {
         this.repository = repository;
+        this.mapper = new ModelMapper();
     }
 
     @Override
-    public Discount createDiscount(Discount discount) {
-        discount.setModifiedAt(LocalDateTime.now());
-        discount.setCreatedAt(LocalDateTime.now());
-        discount.setActive(true);
+    public DiscountDTO createDiscount(DiscountDTO discountDTO) {
+        discountDTO.setModifiedAt(LocalDateTime.now());
+        discountDTO.setCreatedAt(LocalDateTime.now());
+        discountDTO.setActive(true);
 
-        return repository.save(discount);
+        Discount discount = mapper.map(discountDTO, Discount.class);
+        Discount discountSaved = repository.save(discount);
+
+        return mapper.map(discountSaved, DiscountDTO.class);
     }
 
     @Override
-    public Discount editDiscount(Discount discount) {
-        Discount discountSaved = repository.findById(discount.getId()).orElseThrow(() -> new GenericException.NotFoundException("Discount", discount.getId()));
+    public DiscountDTO editDiscount(DiscountDTO discountDTO) {
+        Discount discountFound = repository.findById(discountDTO.getId()).orElseThrow(() -> new GenericException.NotFoundException("Discount", discountDTO.getId()));
 
-        discountSaved.setDiscountPercent(discount.getDiscountPercent());
-        discountSaved.setDescription(discount.getDescription());
-        discountSaved.setName(discount.getName());
-        discountSaved.setActive(discount.isActive());
-        discountSaved.setModifiedAt(LocalDateTime.now());
+        discountFound.setDiscountPercent(discountDTO.getDiscountPercent());
+        discountFound.setDescription(discountDTO.getDescription());
+        discountFound.setName(discountDTO.getName());
+        discountFound.setActive(discountDTO.isActive());
+        discountFound.setModifiedAt(LocalDateTime.now());
 
-        return repository.save(discountSaved);
+        Discount discountSaved = repository.save(discountFound);
+
+        return mapper.map(discountSaved, DiscountDTO.class);
     }
 
     @Override
-    public Discount findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Discount", id));
+    public DiscountDTO findById(Long id) {
+        Discount discount = repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Discount", id));
+
+        return mapper.map(discount, DiscountDTO.class);
     }
 
     @Override
@@ -57,7 +71,10 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public List<Discount> listDiscount() {
-        return repository.findAll();
+    public List<DiscountDTO> listDiscount() {
+        List<Discount> discountList = repository.findAll();
+        Type listType = new TypeToken<List<DiscountDTO>>(){}.getType();
+        List<DiscountDTO> discountDTOList = mapper.map(discountList, listType);
+        return discountDTOList;
     }
 }

@@ -1,12 +1,16 @@
 package com.ecommerce.product.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CategoryDTO {
 
     @Schema(example= "0", description = "You don't need to fill this =)")
@@ -20,4 +24,13 @@ public class CategoryDTO {
 
     @Schema(example= "/danzinha/ecomm/svg", description = "The svg Path")
     private String svg;
+
+    @JsonIgnore
+    private LocalDateTime createdAt;
+
+    @JsonIgnore
+    private LocalDateTime modifiedAt;
+
+    @JsonIgnore
+    private LocalDateTime deletedAt;
 }

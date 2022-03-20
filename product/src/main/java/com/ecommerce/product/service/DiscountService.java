@@ -1,18 +1,18 @@
 package com.ecommerce.product.service;
 
-import com.ecommerce.product.model.Discount;
+import com.ecommerce.product.controller.dto.DiscountDTO;
 
 import java.util.List;
 
 public interface DiscountService {
 
-    Discount createDiscount(Discount discount);
+    DiscountDTO createDiscount(DiscountDTO discount);
 
-    Discount editDiscount(Discount discount);
+    DiscountDTO editDiscount(DiscountDTO discount);
 
-    Discount findById(Long id);
+    DiscountDTO findById(Long id);
 
     void deleteDiscount(Long id);
 
-    List<Discount> listDiscount();
+    List<DiscountDTO> listDiscount();
 }

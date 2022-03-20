@@ -1,5 +1,7 @@
 package com.ecommerce.product.service;
 
+import com.ecommerce.product.controller.dto.InventoryDTO;
+import com.ecommerce.product.controller.dto.ProductDTO;
 import com.ecommerce.product.model.Inventory;
 import com.ecommerce.product.model.InventoryTestBuilder;
 import com.ecommerce.product.model.Product;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -31,10 +34,13 @@ public class InventoryServiceTest {
 
     private InventoryService service;
 
+    private ModelMapper mapper;
+
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
         service = new InventoryServiceImpl(repository, productService);
+        this.mapper = new ModelMapper();
     }
 
     @Test
@@ -49,14 +55,15 @@ public class InventoryServiceTest {
                 .withDefaultValues()
                 .build();
 
-        when(repository.save(inventory)).thenReturn(inventory);
+        when(repository.save(isA(Inventory.class))).thenReturn(inventory);
+        InventoryDTO inventoryDTO = mapper.map(inventory, InventoryDTO.class);
 
-        Inventory valueReturned = service.createInventory(inventory);
+        service.createInventory(inventoryDTO);
 
-        assertEquals(valueReturned.getQuantity(), inventoryCpy.getQuantity());
-        assertNotEquals(valueReturned.getCreatedAt(), inventoryCpy.getCreatedAt());
-        assertNotEquals(valueReturned.getModifiedAt(), inventoryCpy.getModifiedAt());
-        assertNull(valueReturned.getDeletedAt());
+        assertEquals(inventoryDTO.getQuantity(), inventoryCpy.getQuantity());
+        assertNotEquals(inventoryDTO.getCreatedAt(), inventoryCpy.getCreatedAt());
+        assertNotEquals(inventoryDTO.getModifiedAt(), inventoryCpy.getModifiedAt());
+        assertNull(inventoryDTO.getDeletedAt());
     }
 
     @Test
@@ -64,12 +71,6 @@ public class InventoryServiceTest {
         Inventory inventory = InventoryTestBuilder
                 .init()
                 .withDefaultValuesNew()
-                .build();
-
-        Product product = ProductTestBuilder
-                .init()
-                .withDefaultValues()
-                .inventory(inventory)
                 .build();
 
         when(repository.findById(inventory.getId())).thenReturn(Optional.ofNullable(inventory));
@@ -103,18 +104,16 @@ public class InventoryServiceTest {
 
         when(repository.findAll()).thenReturn(List.of(inventory1, inventory2));
 
-        List<Inventory> valuesReturned = service.listInventory();
+        List<InventoryDTO> valuesReturned = service.listInventory();
 
         assertEquals(valuesReturned.size(), 2);
-        assertTrue(valuesReturned.contains(inventory1));
-        assertTrue(valuesReturned.contains(inventory2));
     }
 
     @Test
     public void listInventoryWithNoData_shouldSucceed() {
         when(repository.findAll()).thenReturn(List.of());
 
-        List<Inventory> valuesReturned = service.listInventory();
+        List<InventoryDTO> valuesReturned = service.listInventory();
 
         assertEquals(valuesReturned.size(), 0);
     }
@@ -137,14 +136,16 @@ public class InventoryServiceTest {
                 .inventory(inventory)
                 .build();
 
-        when(productService.findById(product.getId())).thenReturn(product);
-        when(repository.save(inventory)).thenReturn(inventory);
+        ProductDTO productDTO = mapper.map(product, ProductDTO.class);
 
-        Inventory valueReturned = service.addItem(product.getId(), 10);
+        when(productService.findById(product.getId())).thenReturn(productDTO);
+        when(repository.save(isA(Inventory.class))).thenReturn(inventory);
 
-        assertEquals(valueReturned.getQuantity(), inventoryCpy.getQuantity() + 10);
-        assertNotEquals(valueReturned.getModifiedAt(), inventoryCpy.getModifiedAt());
-        assertNull(valueReturned.getDeletedAt());
+        service.addItem(product.getId(), 10);
+
+        assertEquals(productDTO.getInventory().getQuantity(), inventoryCpy.getQuantity() + 10);
+        assertNotEquals(productDTO.getInventory().getModifiedAt(), inventoryCpy.getModifiedAt());
+        assertNull(productDTO.getInventory().getDeletedAt());
     }
 
     @Test
@@ -175,14 +176,15 @@ public class InventoryServiceTest {
                 .inventory(inventory)
                 .build();
 
-        when(productService.findById(product.getId())).thenReturn(product);
-        when(repository.save(inventory)).thenReturn(inventory);
+        ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+        when(productService.findById(product.getId())).thenReturn(productDTO);
+        when(repository.save(isA(Inventory.class))).thenReturn(inventory);
 
-        Inventory valueReturned = service.removeItem(product.getId(), 5);
+        service.removeItem(product.getId(), 5);
 
-        assertEquals(valueReturned.getQuantity(), inventoryCpy.getQuantity() - 5);
-        assertNotEquals(valueReturned.getModifiedAt(), inventoryCpy.getModifiedAt());
-        assertNull(valueReturned.getDeletedAt());
+        assertEquals(productDTO.getInventory().getQuantity(), inventoryCpy.getQuantity() - 5);
+        assertNotEquals(productDTO.getInventory().getModifiedAt(), inventoryCpy.getModifiedAt());
+        assertNull(productDTO.getInventory().getDeletedAt());
     }
 
     @Test
@@ -198,7 +200,8 @@ public class InventoryServiceTest {
                 .inventory(inventory)
                 .build();
 
-        when(productService.findById(product.getId())).thenReturn(product);
+        ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+        when(productService.findById(product.getId())).thenReturn(productDTO);
 
         assertThrows(
                 InventoryException.NotEnoughtStockException.class,

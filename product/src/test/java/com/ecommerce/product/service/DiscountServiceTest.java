@@ -1,5 +1,6 @@
 package com.ecommerce.product.service;
 
+import com.ecommerce.product.controller.dto.DiscountDTO;
 import com.ecommerce.product.model.Discount;
 import com.ecommerce.product.model.DiscountTestBuilder;
 import com.ecommerce.product.repository.DiscountRepository;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -25,10 +27,13 @@ public class DiscountServiceTest {
 
     private DiscountService service;
 
+    private ModelMapper mapper;
+
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
         service = new DiscountServiceImpl(repository);
+        this.mapper = new ModelMapper();
     }
 
     @Test
@@ -43,17 +48,19 @@ public class DiscountServiceTest {
                 .withDefaultValues()
                 .build();
 
-        when(repository.save(discount)).thenReturn(discount);
+        DiscountDTO discountDTO = mapper.map(discount, DiscountDTO.class);
 
-        Discount valueReturned = service.createDiscount(discount);
+        when(repository.save(isA(Discount.class))).thenReturn(discount);
 
-        assertEquals(valueReturned.getDescription(), discountCpy.getDescription());
-        assertEquals(valueReturned.getName(), discountCpy.getName());
-        assertEquals(valueReturned.isActive(), discountCpy.isActive());
-        assertEquals(valueReturned.getDiscountPercent(), discountCpy.getDiscountPercent());
-        assertNotEquals(valueReturned.getCreatedAt(), discountCpy.getCreatedAt());
-        assertNotEquals(valueReturned.getModifiedAt(), discountCpy.getModifiedAt());
-        assertNull(valueReturned.getDeletedAt());
+        service.createDiscount(discountDTO);
+
+        assertEquals(discountDTO.getDescription(), discountCpy.getDescription());
+        assertEquals(discountDTO.getName(), discountCpy.getName());
+        assertEquals(discountDTO.isActive(), discountCpy.isActive());
+        assertEquals(discountDTO.getDiscountPercent(), discountCpy.getDiscountPercent());
+        assertNotEquals(discountDTO.getCreatedAt(), discountCpy.getCreatedAt());
+        assertNotEquals(discountDTO.getModifiedAt(), discountCpy.getModifiedAt());
+        assertNull(discountDTO.getDeletedAt());
     }
 
     @Test
@@ -73,10 +80,12 @@ public class DiscountServiceTest {
                 .withDefaultValuesNew()
                 .build();
 
-        when(repository.findById(discount.getId())).thenReturn(Optional.ofNullable(discountSaved));
-        when(repository.save(discountSaved)).thenReturn(discountSaved);
+        DiscountDTO discountDTO = mapper.map(discount, DiscountDTO.class);
 
-        Discount valueReturned = service.editDiscount(discount);
+        when(repository.findById(discount.getId())).thenReturn(Optional.ofNullable(discountSaved));
+        when(repository.save(isA(Discount.class))).thenReturn(discountSaved);
+
+        DiscountDTO valueReturned = service.editDiscount(discountDTO);
 
         assertEquals(valueReturned.getDiscountPercent(), discountCpy.getDiscountPercent());
         assertEquals(valueReturned.getDescription(), discountCpy.getDescription());
@@ -93,9 +102,11 @@ public class DiscountServiceTest {
                 .withDefaultValuesNew()
                 .build();
 
+        DiscountDTO discountDTO = mapper.map(discount, DiscountDTO.class);
+
         assertThrows(
                 GenericException.NotFoundException.class,
-                () -> service.editDiscount(discount)
+                () -> service.editDiscount(discountDTO)
         );
     }
 
@@ -113,7 +124,7 @@ public class DiscountServiceTest {
 
         when(repository.findById(discount.getId())).thenReturn(Optional.ofNullable(discount));
 
-        Discount valueReturned = service.findById(discount.getId());
+        DiscountDTO valueReturned = service.findById(discount.getId());
 
         assertEquals(valueReturned.getDiscountPercent(), discountCpy.getDiscountPercent());
         assertEquals(valueReturned.getDescription(), discountCpy.getDescription());
@@ -170,18 +181,16 @@ public class DiscountServiceTest {
 
         when(repository.findAll()).thenReturn(List.of(discount1, discount2));
 
-        List<Discount> valuesReturned = service.listDiscount();
+        List<DiscountDTO> valuesReturned = service.listDiscount();
 
         assertEquals(valuesReturned.size(), 2);
-        assertTrue(valuesReturned.contains(discount1));
-        assertTrue(valuesReturned.contains(discount2));
     }
 
     @Test
     public void listDiscountWithNoData_shouldSucceed() {
         when(repository.findAll()).thenReturn(List.of());
 
-        List<Discount> valuesReturned = service.listDiscount();
+        List<DiscountDTO> valuesReturned = service.listDiscount();
 
         assertEquals(valuesReturned.size(), 0);
     }

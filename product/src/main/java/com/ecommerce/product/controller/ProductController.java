@@ -19,38 +19,27 @@ public class ProductController {
 
     private final ProductService service;
 
-    private final ModelMapper mapper;
 
     public ProductController(@Autowired ProductService productService) {
         this.service = productService;
-        this.mapper = new ModelMapper();
     }
 
     @Operation(summary = "Create new product", description = "Returns a single product", tags = { "product" })
     @PostMapping
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO product) {
-        Product productSaved = service.createProduct(mapper.map(product, Product.class));
-        ProductDTO productDTO = mapper.map(productSaved, ProductDTO.class);
-
-        return ResponseEntity.ok(productDTO);
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
+        return ResponseEntity.ok(service.createProduct(productDTO));
     }
 
     @Operation(summary = "Edit a product", description = "Returns a single product", tags = { "product" })
     @PutMapping
     public ResponseEntity<ProductDTO> editProduct(@RequestBody ProductDTO product) {
-        Product productSaved = service.editProduct(mapper.map(product, Product.class));
-        ProductDTO productDTO = mapper.map(productSaved, ProductDTO.class);
-
-        return ResponseEntity.ok(productDTO);
+        return ResponseEntity.ok(service.editProduct(product));
     }
 
     @Operation(summary = "Search product by id", description = "Returns a single product", tags = { "product" })
     @GetMapping("id")
     public ResponseEntity<ProductDTO> findProductById(@PathVariable("id") Long id) {
-        Product productSaved = service.findById(id);
-        ProductDTO productDTO = mapper.map(productSaved, ProductDTO.class);
-
-        return ResponseEntity.ok(productDTO);
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @Operation(summary = "Delete a product", description = "Returns a empty body", tags = { "product" })
@@ -62,10 +51,6 @@ public class ProductController {
     @Operation(summary = "List all products", description = "Returns a product list", tags = { "product" })
     @GetMapping
     public ResponseEntity<List<ProductDTO>> listProduct() {
-        List<Product> productList = service.listProduct();
-        Type listType = new TypeToken<List<ProductDTO>>(){}.getType();
-        List<ProductDTO> productDTOList = mapper.map(productList, listType);
-
-        return ResponseEntity.ok(productDTOList);
+        return ResponseEntity.ok(service.listProduct());
     }
 }

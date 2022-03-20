@@ -30,19 +30,13 @@ public class DiscountController {
     @Operation(summary = "Create a discount", description = "Returns a single discount", tags = { "discount" })
     @PostMapping
     public ResponseEntity<DiscountDTO> createDiscount(@RequestBody DiscountDTO discount) {
-        Discount discountSaved = service.createDiscount(mapper.map(discount, Discount.class));
-        DiscountDTO discountDTO = mapper.map(discountSaved, DiscountDTO.class);
-
-        return ResponseEntity.ok(discountDTO);
+        return ResponseEntity.ok(service.createDiscount(discount));
     }
 
     @Operation(summary = "Edit a discount", description = "Returns a single discount", tags = { "discount" })
     @PutMapping
     public ResponseEntity<DiscountDTO> editDiscount(@RequestBody DiscountDTO discount) {
-        Discount discountSaved = service.editDiscount(mapper.map(discount, Discount.class));
-        DiscountDTO discountDTO = mapper.map(discountSaved, DiscountDTO.class);
-
-        return ResponseEntity.ok(discountDTO);
+        return ResponseEntity.ok(service.editDiscount(discount));
     }
 
     @Operation(summary = "Delete a discount", description = "Returns a empty body", tags = { "discount" })
@@ -54,10 +48,6 @@ public class DiscountController {
     @Operation(summary = "List discounts", description = "Returns a list of discounts", tags = { "discount" })
     @GetMapping
     public ResponseEntity<List<DiscountDTO>> listDiscount() {
-        List<Discount> discountList = service.listDiscount();
-        Type listType = new TypeToken<List<DiscountDTO>>(){}.getType();
-        List<DiscountDTO> discountDTOList = mapper.map(discountList, listType);
-
-        return ResponseEntity.ok(discountDTOList);
+        return ResponseEntity.ok(service.listDiscount());
     }
 }
