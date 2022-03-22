@@ -6,11 +6,13 @@ import com.ecommerce.product.model.Inventory;
 import com.ecommerce.product.repository.InventoryRepository;
 import com.ecommerce.product.service.InventoryService;
 import com.ecommerce.product.service.ProductService;
+import com.ecommerce.product.service.converter.Converter;
 import com.ecommerce.product.utils.exception.GenericException;
 import com.ecommerce.product.utils.exception.InventoryException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
@@ -26,21 +28,10 @@ public class InventoryServiceImpl implements InventoryService {
 
     private final ModelMapper mapper;
 
-    public InventoryServiceImpl(@Autowired InventoryRepository repository, @Autowired ProductService productService) {
+    public InventoryServiceImpl(@Autowired InventoryRepository repository, @Autowired @Lazy ProductService productService) {
         this.repository = repository;
         this.productService = productService;
-        this.mapper = new ModelMapper();
-    }
-
-    @Override
-    public InventoryDTO createInventory(InventoryDTO inventoryDTO) {
-        inventoryDTO.setModifiedAt(LocalDateTime.now());
-        inventoryDTO.setCreatedAt(LocalDateTime.now());
-
-        Inventory inventory = mapper.map(inventoryDTO, Inventory.class);
-        Inventory inventorySaved = repository.save(inventory);
-
-        return mapper.map(inventorySaved, InventoryDTO.class);
+        this.mapper = Converter.init();
     }
 
     @Override
@@ -64,7 +55,7 @@ public class InventoryServiceImpl implements InventoryService {
     public InventoryDTO addItem(Long productId, int quantity) {
         ProductDTO product = productService.findById(productId);
 
-        InventoryDTO inventoryDTO = product.getInventory();
+        InventoryDTO inventoryDTO = findById(product.getInventory().getId());
         inventoryDTO.setQuantity(inventoryDTO.getQuantity() + quantity);
         inventoryDTO.setModifiedAt(LocalDateTime.now());
 
@@ -75,10 +66,21 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    public InventoryDTO findById(Long id) {
+        Inventory inventory = repository.findById(id).orElseThrow(() -> new GenericException.NotFoundException("Inventory", id));
+
+        if (inventory.getDeletedAt() != null) {
+            throw new GenericException.ItemDeletedException("Inventory", id);
+        }
+
+        return mapper.map(inventory, InventoryDTO.class);
+    }
+
+    @Override
     public InventoryDTO removeItem(Long productId, int quantity) {
         ProductDTO product = productService.findById(productId);
 
-        InventoryDTO inventoryDTO = product.getInventory();
+        InventoryDTO inventoryDTO = findById(product.getInventory().getId());
 
         int qty = inventoryDTO.getQuantity() - quantity;
 

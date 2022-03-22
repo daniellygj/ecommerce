@@ -3,6 +3,7 @@ package com.ecommerce.product.controller;
 import com.ecommerce.product.controller.dto.DiscountDTO;
 import com.ecommerce.product.model.Discount;
 import com.ecommerce.product.service.DiscountService;
+import com.ecommerce.product.service.converter.Converter;
 import io.swagger.v3.oas.annotations.Operation;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -24,7 +25,7 @@ public class DiscountController {
 
     public DiscountController(@Autowired DiscountService service) {
         this.service = service;
-        this.mapper = new ModelMapper();
+        this.mapper = Converter.init();
     }
 
     @Operation(summary = "Create a discount", description = "Returns a single discount", tags = { "discount" })

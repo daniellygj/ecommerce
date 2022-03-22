@@ -5,6 +5,7 @@ import com.ecommerce.product.controller.dto.CategoryDTO;
 import com.ecommerce.product.model.Category;
 import com.ecommerce.product.repository.CategoryRepository;
 import com.ecommerce.product.service.CategoryService;
+import com.ecommerce.product.service.converter.Converter;
 import com.ecommerce.product.utils.exception.GenericException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -24,7 +25,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     public CategoryServiceImpl(@Autowired CategoryRepository repository) {
         this.repository = repository;
-        this.mapper = new ModelMapper();
+        this.mapper = Converter.init();
     }
 
     @Override

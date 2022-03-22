@@ -20,13 +20,6 @@ public class InventoryController {
         this.service = service;
     }
 
-    @Operation(summary = "Create inventory ", description = "Returns a single inventory", tags = { "inventory" })
-    @PostMapping
-    public ResponseEntity<InventoryDTO> createInventory(@RequestBody InventoryDTO inventory) {
-        InventoryDTO inventorySaved = service.createInventory(inventory);
-        return ResponseEntity.ok(inventorySaved);
-    }
-
     @Operation(summary = "Delete inventory ", description = "Returns empty body", tags = { "inventory" })
     @DeleteMapping("{id}")
     public void deleteInventory(@PathVariable("id") Long id) {

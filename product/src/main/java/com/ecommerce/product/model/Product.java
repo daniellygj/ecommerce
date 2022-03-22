@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,15 +28,16 @@ public class Product {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
-    @OneToOne
-    @JoinColumn(name = "inventory_id", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Inventory inventory;
 
     private float price;
 
     @OneToOne
-    @JoinColumn(name = "discount_id", referencedColumnName = "id")
     private Discount discount;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Brand brand;
 
     private LocalDateTime createdAt;
 

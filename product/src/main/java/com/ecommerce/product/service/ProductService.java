@@ -3,6 +3,7 @@ package com.ecommerce.product.service;
 import com.ecommerce.product.controller.dto.ProductDTO;
 import com.ecommerce.product.model.Product;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ProductService {
@@ -16,5 +17,4 @@ public interface ProductService {
     void deleteProduct(Long id);
 
     List<ProductDTO> listProduct();
-    
 }

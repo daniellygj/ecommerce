@@ -12,10 +12,10 @@ import java.nio.charset.StandardCharsets;
 public class ImageConverter {
 
 
-    private ModelMapper mapper = new ModelMapper();
+    private static final ModelMapper mapper = new ModelMapper();
 
 
-    Converter<Image, ImageDTO> convertDTO = mappingContext -> {
+    public static Converter<Image, ImageDTO> convertDTO = mappingContext -> {
         Image image = mappingContext.getSource();
         ImageDTO imageDTO = mappingContext.getDestination();
 
@@ -29,7 +29,7 @@ public class ImageConverter {
         return imageDTO;
     };
 
-    Converter<ImageDTO, Image> convert = mappingContext -> {
+    public static Converter<ImageDTO, Image> convert = mappingContext -> {
         Image image = mappingContext.getDestination();
         ImageDTO imageDTO = mappingContext.getSource();
 
@@ -42,6 +42,4 @@ public class ImageConverter {
 
         return image;
     };
-
-
 }

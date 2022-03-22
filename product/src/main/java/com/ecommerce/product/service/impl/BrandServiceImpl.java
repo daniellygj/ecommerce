@@ -4,6 +4,7 @@ import com.ecommerce.product.controller.dto.BrandDTO;
 import com.ecommerce.product.model.Brand;
 import com.ecommerce.product.repository.BrandRepository;
 import com.ecommerce.product.service.BrandService;
+import com.ecommerce.product.service.converter.Converter;
 import com.ecommerce.product.utils.exception.GenericException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -24,7 +25,7 @@ public class BrandServiceImpl implements BrandService {
 
     public BrandServiceImpl(@Autowired BrandRepository brandRepository) {
         this.repository = brandRepository;
-        this.mapper = new ModelMapper();
+        this.mapper = Converter.init();
     }
 
     public BrandDTO createBrand(BrandDTO brandDTO) {

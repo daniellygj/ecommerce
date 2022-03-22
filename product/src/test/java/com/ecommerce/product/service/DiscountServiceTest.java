@@ -4,6 +4,7 @@ import com.ecommerce.product.controller.dto.DiscountDTO;
 import com.ecommerce.product.model.Discount;
 import com.ecommerce.product.model.DiscountTestBuilder;
 import com.ecommerce.product.repository.DiscountRepository;
+import com.ecommerce.product.service.converter.Converter;
 import com.ecommerce.product.service.impl.DiscountServiceImpl;
 import com.ecommerce.product.utils.exception.GenericException;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +34,7 @@ public class DiscountServiceTest {
     public void init() {
         MockitoAnnotations.openMocks(this);
         service = new DiscountServiceImpl(repository);
-        this.mapper = new ModelMapper();
+        this.mapper = Converter.init();
     }
 
     @Test

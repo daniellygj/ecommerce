@@ -4,6 +4,7 @@ import com.ecommerce.product.controller.dto.CategoryDTO;
 import com.ecommerce.product.model.Category;
 import com.ecommerce.product.model.CategoryTestBuilder;
 import com.ecommerce.product.repository.CategoryRepository;
+import com.ecommerce.product.service.converter.Converter;
 import com.ecommerce.product.service.impl.CategoryServiceImpl;
 import com.ecommerce.product.utils.exception.GenericException;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +34,7 @@ public class CategoryServiceTest {
     public void init() {
         MockitoAnnotations.openMocks(this);
         categoryService = new CategoryServiceImpl(repository);
-        this.mapper = new ModelMapper();
+        this.mapper = Converter.init();
     }
 
     @Test
@@ -102,7 +103,6 @@ public class CategoryServiceTest {
         CategoryDTO valueReturned = categoryService.findById(category.getId());
 
         assertEquals(valueReturned.getDescription(), categorySaved.getDescription());
-        assertEquals(valueReturned.getSvg(), categorySaved.getSvg());
         assertEquals(valueReturned.getName(), categorySaved.getName());
         assertEquals(valueReturned.getCreatedAt(), categorySaved.getCreatedAt());
         assertEquals(valueReturned.getModifiedAt(), categorySaved.getModifiedAt());

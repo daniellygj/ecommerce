@@ -11,4 +11,11 @@ public class GenericException extends Throwable {
             super(object + " with id " + id + " does not exists.");
         }
     }
+
+    @ResponseStatus(code = HttpStatus.NOT_ACCEPTABLE)
+    public static class ItemDeletedException extends RuntimeException {
+        public ItemDeletedException(String object, Long id) {
+            super("The " + object + " with id " +  id + " was already deleted.");
+        }
+    }
 }

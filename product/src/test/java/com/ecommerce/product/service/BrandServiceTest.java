@@ -4,6 +4,7 @@ import com.ecommerce.product.controller.dto.BrandDTO;
 import com.ecommerce.product.model.Brand;
 import com.ecommerce.product.model.BrandTestBuilder;
 import com.ecommerce.product.repository.BrandRepository;
+import com.ecommerce.product.service.converter.Converter;
 import com.ecommerce.product.service.impl.BrandServiceImpl;
 import com.ecommerce.product.utils.exception.GenericException;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +34,7 @@ public class BrandServiceTest {
     public void init() {
         MockitoAnnotations.openMocks(this);
         brandService = new BrandServiceImpl(brandRepository);
-        this.mapper = new ModelMapper();
+        this.mapper = Converter.init();
     }
 
     @Test

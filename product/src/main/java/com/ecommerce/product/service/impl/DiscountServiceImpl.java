@@ -4,6 +4,7 @@ import com.ecommerce.product.controller.dto.DiscountDTO;
 import com.ecommerce.product.model.Discount;
 import com.ecommerce.product.repository.DiscountRepository;
 import com.ecommerce.product.service.DiscountService;
+import com.ecommerce.product.service.converter.Converter;
 import com.ecommerce.product.utils.exception.GenericException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -23,7 +24,7 @@ public class DiscountServiceImpl implements DiscountService {
 
     public DiscountServiceImpl(@Autowired DiscountRepository repository) {
         this.repository = repository;
-        this.mapper = new ModelMapper();
+        this.mapper = Converter.init();
     }
 
     @Override
