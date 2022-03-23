@@ -2,7 +2,7 @@ package com.ecommerce.product.service;
 
 import com.ecommerce.product.controller.dto.CategoryDTO;
 import com.ecommerce.product.controller.dto.DiscountDTO;
-import com.ecommerce.product.controller.dto.InventoryDTO;
+import com.ecommerce.product.controller.dto.ImageDTO;
 import com.ecommerce.product.controller.dto.ProductDTO;
 import com.ecommerce.product.model.*;
 import com.ecommerce.product.repository.ProductRepository;
@@ -49,6 +49,9 @@ public class ProductServiceTest {
     private ProductDTO productEditedDTO;
     private CategoryDTO categoryDTO;
 
+//    private ImageDTO image1;
+//    private ImageDTO image2;
+
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
@@ -60,11 +63,27 @@ public class ProductServiceTest {
     public void createProduct_shouldSucceed() {
         createProductWithDefaultValues();
 
+        Image image01 = ImageTestBuilder
+                .init()
+                .withDefaultValues()
+                .build();
+
+        Image image02 = ImageTestBuilder
+                .init()
+                .withDefaultValuesNew()
+                .build();
+
+        ImageDTO image1 = mapper.map(image01, ImageDTO.class);
+        ImageDTO image2 = mapper.map(image02, ImageDTO.class);
+
         ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+        productDTO.setImages(List.of(image1, image2));
 
         when(repository.save(isA(Product.class))).thenReturn(product);
         when(categoryService.findById(product.getCategory().getId())).thenReturn(categoryDTO);
         when(discountService.findById(product.getDiscount().getId())).thenReturn(discountDTO);
+        when(imageService.saveImage(image01)).thenReturn(image1);
+        when(imageService.saveImage(image02)).thenReturn(image2);
 
         ProductDTO valueReturned = service.createProduct(productDTO);
 
@@ -72,7 +91,7 @@ public class ProductServiceTest {
         assertEquals(valueReturned.getName(), productCpy.getName());
         assertEquals(valueReturned.getId(), productCpy.getId());
         assertEquals(valueReturned.getCategory(), productCpy.getCategory().getId());
-        assertEquals(valueReturned.getInventory(), productCpy.getInventory().getId());
+        assertEquals(valueReturned.getInventory().getId(), productCpy.getInventory().getId());
         assertEquals(valueReturned.getDiscount(), productCpy.getDiscount().getId());
         assertEquals(valueReturned.getPrice(), productCpy.getPrice());
         assertNull(valueReturned.getDeletedAt());
@@ -94,7 +113,7 @@ public class ProductServiceTest {
         assertNotEquals(productEditedDTO.getName(), productCpy.getName());
         assertEquals(productEditedDTO.getId(), productCpy.getId());
         assertNotEquals(productEditedDTO.getCategory(), productCpy.getCategory().getId());
-        assertEquals(productEditedDTO.getInventory(), productCpy.getInventory().getId());
+        assertEquals(productEditedDTO.getInventory().getId(), productCpy.getInventory().getId());
         assertNotEquals(productEditedDTO.getDiscount(), productCpy.getDiscount().getId());
         assertNotEquals(productEditedDTO.getPrice(), productCpy.getPrice());
         assertEquals(productEditedDTO.getCreatedAt(), productCpy.getCreatedAt());
@@ -147,7 +166,7 @@ public class ProductServiceTest {
     public void findById_shouldSucceed() {
         createProductWithDefaultValues();
 
-        when(repository.findById(product.getId())).thenReturn(Optional.ofNullable(product));
+        when(repository.findById(product.getInventory().getId())).thenReturn(Optional.ofNullable(product));
 
         ProductDTO valueReturned = service.findById(product.getId());
 
@@ -155,7 +174,7 @@ public class ProductServiceTest {
         assertEquals(valueReturned.getName(), productCpy.getName());
         assertEquals(valueReturned.getId(), productCpy.getId());
         assertEquals(valueReturned.getCategory(), productCpy.getCategory().getId());
-        assertEquals(valueReturned.getInventory(), productCpy.getInventory().getId());
+        assertEquals(valueReturned.getInventory().getId(), productCpy.getInventory().getId());
         assertEquals(valueReturned.getDiscount(), productCpy.getDiscount().getId());
         assertEquals(valueReturned.getPrice(), productCpy.getPrice());
         assertEquals(valueReturned.getCreatedAt(), productCpy.getCreatedAt());
@@ -284,6 +303,19 @@ public class ProductServiceTest {
                 .init()
                 .withDefaultValuesNew()
                 .build();
+
+//        Image image01 = ImageTestBuilder
+//                .init()
+//                .withDefaultValues()
+//                .build();
+//
+//        Image image02 = ImageTestBuilder
+//                .init()
+//                .withDefaultValuesNew()
+//                .build();
+//
+//        this.image1 = mapper.map(image01, ImageDTO.class);
+//        this.image2 = mapper.map(image02, ImageDTO.class);
 
         return ProductTestBuilder
                 .init()

@@ -8,7 +8,6 @@ import com.ecommerce.product.model.Inventory;
 import com.ecommerce.product.model.Product;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 
 public class ProductConverter {
 
@@ -61,7 +60,6 @@ public class ProductConverter {
         return product;
     };
 
-
     public static void config(ModelMapper mapper) {
         mapper.typeMap(Product.class, ProductDTO.class)
                 .addMapping(src -> src.getCategory().getId(), ProductDTO::setCategory);
@@ -69,5 +67,4 @@ public class ProductConverter {
         mapper.typeMap(Product.class, ProductDTO.class)
                 .addMapping(src -> src.getDiscount().getId(), ProductDTO::setDiscount);
     }
-
 }

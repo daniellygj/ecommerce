@@ -18,4 +18,11 @@ public class GenericException extends Throwable {
             super("The " + object + " with id " +  id + " was already deleted.");
         }
     }
+
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public static class ItemAlreadyExistsException extends RuntimeException {
+        public ItemAlreadyExistsException(String object, Long id) {
+            super("The " + object + " with id " +  id + " already exists.");
+        }
+    }
 }

@@ -66,20 +66,13 @@ public class ProductServiceImpl implements ProductService {
         List<ImageDTO> imageDTOList = new ArrayList<>();
 
         productDTO.getImages().forEach(img -> {
+            img.setProduct(productDTO);
             Image image = mapper.map(img, Image.class);
             image.setProduct(product);
             image.setImage(img.getImage().getBytes(StandardCharsets.UTF_8));
-            Image imageSaved = imageService.saveImage(image);
+            ImageDTO imageSaved = imageService.saveImage(image);
 
-            ImageDTO imageDTO = ImageDTO
-                    .builder()
-                    .description(imageSaved.getDescription())
-                    .image(new String(imageSaved.getImage(), StandardCharsets.UTF_8))
-                    .id(imageSaved.getId())
-                    .build();
-
-
-            imageDTOList.add(imageDTO);
+            imageDTOList.add(imageSaved);
         });
 
         ProductDTO productDTOSaved = mapper.map(productSaved, ProductDTO.class);

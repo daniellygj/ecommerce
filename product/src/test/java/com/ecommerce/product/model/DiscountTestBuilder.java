@@ -10,7 +10,6 @@ public class DiscountTestBuilder {
     private static final LocalDateTime CREATED_AT = LocalDateTime.of(2022, 3, 18, 10, 45);
     private static final LocalDateTime MODIFIED_AT = LocalDateTime.of(2022, 3, 18, 10, 45);
 
-
     private static final String DEFAULT_NAME = "Mock Category Name";
     private static final String DEFAULT_DESCRIPTION = "Mock Category Description";
     private static final float DEFAULT_DISCOUNT_PERCENT = 5.3f;
