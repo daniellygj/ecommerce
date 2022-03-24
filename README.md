@@ -1,7 +1,7 @@
 # e-commerce
 
 ### Recursos e requisitos 
-O aplicativo representa uma loja online que vende vários produtos físicos, como camisetas e cafés. Se você já comprou algo online antes, a experiência de usar a loja deve ser relativamente familiar. Aqui estão alguns dos recursos básicos que a loja implementa: 
+O aplicativo representa uma loja online que vende vários produtos físicos, como camisetas e canecas. Se você já comprou algo online antes, a experiência de usar a loja deve ser relativamente familiar. Aqui estão alguns dos recursos básicos que a loja implementa: 
 
 ##### Produto:
 * Cadastrar produtos
